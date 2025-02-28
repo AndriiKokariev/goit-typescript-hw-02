@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+.formContainer {
+  display: flex;
+  justify-content: center;
+  background-color: #41f;
+  position: fixed;
+  width: 100%;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  margin: 8px 0;
+  border-radius: 4px;
+}
+
+.input {
+  border: none;
+  outline: none;
+  width: 400px;
+  height: 40px;
+  padding: 0;
+}
+
+.btn {
+  border: none;
+  background-color: transparent;
+  padding: 0 10px;
+}

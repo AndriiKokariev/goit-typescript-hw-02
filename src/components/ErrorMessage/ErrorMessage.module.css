@@ -1,0 +1,9 @@
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.errorText {
+  font-size: 25px;
+}

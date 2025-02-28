@@ -1,0 +1,10 @@
+img {
+  max-width: 100%;
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+  width: 300px;
+  height: 200px;
+}
