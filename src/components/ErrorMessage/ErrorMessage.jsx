@@ -3,7 +3,7 @@ import s from "./ErrorMessage.module.css";
 const ErrorMessage = () => {
   return (
     <div className={s.errorContainer}>
-      <p className={s.errorText}>Something went wrong... Try again later!</p>
+      <p className={s.errorText}>Too many requests... Try again later!</p>
     </div>
   );
 };

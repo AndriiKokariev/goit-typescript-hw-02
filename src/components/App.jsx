@@ -7,7 +7,6 @@ import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
 import Loader from "./Loader/Loader";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import ImageModal from "./ImageModal/ImageModal";
-import Notification from "./Notification/Notification";
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -18,21 +17,28 @@ const App = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [isEmpty, setIsEmpty] = useState(false);
+  const [value, setValue] = useState("");
+  const [newQuery, setNewQuery] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newQuery = e.target.elements.search.value;
-    if (newQuery.trim() === "") {
+    if (value.trim() === "") {
       toast.error("Search query cannot be empty!", {
         duration: 3000,
       });
       return;
     }
+    if (newQuery === value) {
+      toast.error("Request already submitted. Try another.");
+      return;
+    }
+
+    setNewQuery(value);
+
     setPage(1);
     setIsLoading(false);
     setImages([]);
-    setQuery(newQuery);
+    setQuery(value);
     setIsEmpty(false);
   };
 
@@ -40,12 +46,16 @@ const App = () => {
     if (!query) return;
     const getData = async () => {
       try {
+        setIsError(false);
         setIsLoading(true);
-        const response = await findImages(query, page);
-        setImages((prev) => [...prev, ...response.data.results]);
-        if (!response.data.results.length) {
+        const { data } = await findImages(query, page);
+
+        setImages((prev) => [...prev, ...data.results]);
+        if (!data.results.length) {
           setIsEmpty(true);
         }
+        if (isEmpty)
+          toast.error("There are no matches for your search query...");
       } catch (e) {
         console.log(e);
         setIsError(true);
@@ -54,7 +64,7 @@ const App = () => {
       }
     };
     getData();
-  }, [query, page]);
+  }, [query, page, isEmpty]);
 
   const handleClick = () => {
     setPage((prev) => prev + 1);
@@ -72,12 +82,17 @@ const App = () => {
 
   return (
     <div>
-      <SearchBar handleSubmit={handleSubmit} />
+      <SearchBar
+        handleSubmit={handleSubmit}
+        value={value}
+        setValue={setValue}
+      />
       <ImageGallery images={images} onImageClick={handleImageClick} />
-      {images.length > 0 && <LoadMoreBtn handleClick={handleClick} />}
+      {images.length > 0 && !(images.length % 12) && (
+        <LoadMoreBtn handleClick={handleClick} />
+      )}
       {isLoading && <Loader loading={isLoading} />}
       {isError && <ErrorMessage />}
-      {isEmpty && <Notification />}
       <ImageModal
         closeModal={handleModalClose}
         isOpen={modalIsOpen}

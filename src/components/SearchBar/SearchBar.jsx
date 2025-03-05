@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import s from "./SearchBar.module.css";
 
-const SearchBar = ({ handleSubmit }) => {
-  const [value, setValue] = useState("");
+const SearchBar = ({ handleSubmit, value, setValue }) => {
   const handleChange = (e) => {
     setValue(e.target.value);
   };
