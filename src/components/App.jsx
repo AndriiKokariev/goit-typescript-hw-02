@@ -54,8 +54,9 @@ const App = () => {
         if (!data.results.length) {
           setIsEmpty(true);
         }
-        if (isEmpty)
+        if (isEmpty) {
           toast.error("There are no matches for your search query...");
+        }
       } catch (e) {
         console.log(e);
         setIsError(true);
