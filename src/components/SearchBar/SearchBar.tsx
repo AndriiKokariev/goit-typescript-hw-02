@@ -1,8 +1,15 @@
 import { IoSearch } from "react-icons/io5";
 import s from "./SearchBar.module.css";
+import { FC, ChangeEvent, FormEvent } from "react";
 
-const SearchBar = ({ handleSubmit, value, setValue }) => {
-  const handleChange = (e) => {
+interface SearchBarProps {
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  value: string;
+  setValue: (value: string) => void;
+}
+
+const SearchBar: FC<SearchBarProps> = ({ handleSubmit, value, setValue }) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 

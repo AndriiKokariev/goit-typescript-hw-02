@@ -1,9 +1,16 @@
 import Modal from "react-modal";
 import s from "./ImageModal.module.css";
+import { FC } from "react";
 
 Modal.setAppElement("#root");
 
-const ImageModal = ({ isOpen, imageUrl, closeModal }) => {
+interface ImageModalProps {
+  isOpen: boolean;
+  imageUrl: string;
+  closeModal: () => void;
+}
+
+const ImageModal: FC<ImageModalProps> = ({ isOpen, imageUrl, closeModal }) => {
   const customStyles = {
     content: {
       top: "50%",

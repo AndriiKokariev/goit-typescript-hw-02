@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import SearchBar from "./SearchBar/SearchBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FC, FormEvent } from "react";
 import { findImages } from "./services/api";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
@@ -8,24 +8,31 @@ import Loader from "./Loader/Loader";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import ImageModal from "./ImageModal/ImageModal";
 
-const App = () => {
-  const [query, setQuery] = useState("");
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [value, setValue] = useState("");
-  const [newQuery, setNewQuery] = useState("");
+interface Image {
+  id: string;
+  urls: {
+    small: string;
+    regular: string;
+  };
+  alt_description: string;
+}
 
-  const handleSubmit = (e) => {
+const App: FC = () => {
+  const [query, setQuery] = useState<string>("");
+  const [images, setImages] = useState<Image[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
+  const [value, setValue] = useState<string>("");
+  const [newQuery, setNewQuery] = useState<string>("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (value.trim() === "") {
-      toast.error("Search query cannot be empty!", {
-        duration: 3000,
-      });
+      toast.error("Search query cannot be empty!", { duration: 3000 });
       return;
     }
     if (newQuery === value) {
@@ -34,7 +41,6 @@ const App = () => {
     }
 
     setNewQuery(value);
-
     setPage(1);
     setIsLoading(false);
     setImages([]);
@@ -48,10 +54,10 @@ const App = () => {
       try {
         setIsError(false);
         setIsLoading(true);
-        const { data } = await findImages(query, page);
-
-        setImages((prev) => [...prev, ...data.results]);
-        if (!data.results.length) {
+        const { results } = await findImages(query, page);
+        
+        setImages((prev) => [...prev, ...results]);
+        if (!results.length) {
           setIsEmpty(true);
         }
         if (isEmpty) {
@@ -72,10 +78,11 @@ const App = () => {
     setIsError(false);
   };
 
-  const handleImageClick = (regularImage) => {
+  const handleImageClick = (regularImage: string) => {
     setSelectedImage(regularImage);
     setModalIsOpen(true);
   };
+  
   const handleModalClose = () => {
     setSelectedImage("");
     setModalIsOpen(false);
@@ -83,22 +90,12 @@ const App = () => {
 
   return (
     <div>
-      <SearchBar
-        handleSubmit={handleSubmit}
-        value={value}
-        setValue={setValue}
-      />
+      <SearchBar handleSubmit={handleSubmit} value={value} setValue={setValue} />
       <ImageGallery images={images} onImageClick={handleImageClick} />
-      {images.length > 0 && !(images.length % 12) && (
-        <LoadMoreBtn handleClick={handleClick} />
-      )}
+      {images.length > 0 && !(images.length % 12) && <LoadMoreBtn handleClick={handleClick} />}
       {isLoading && <Loader loading={isLoading} />}
       {isError && <ErrorMessage />}
-      <ImageModal
-        closeModal={handleModalClose}
-        isOpen={modalIsOpen}
-        imageUrl={selectedImage}
-      />
+      <ImageModal closeModal={handleModalClose} isOpen={modalIsOpen} imageUrl={selectedImage} />
     </div>
   );
 };
